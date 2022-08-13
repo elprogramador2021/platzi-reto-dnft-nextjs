@@ -3,18 +3,10 @@
 const nextConfig = {
     reactStrictMode: true,
     swcMinify: true,
-}
-
-/*
-const nextConfig = {
-    reactStrictMode: false,
-    swcMinify: true,
-    webpack: (config) => {
-        config.resolve.fallback = { fs: false }
-
-        return config
+    images: {
+        loader: "akamai",
+        path: "",
     },
 }
-*/
 
 module.exports = nextConfig
