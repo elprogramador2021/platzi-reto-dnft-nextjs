@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import ImageUploading from "react-images-uploading"
 import { Button, Input, useNotification, Card, Skeleton, Typography, CopyButton } from "web3uikit"
-import Image from "next/image"
+import NftCard from "./NftCard"
 import { useWeb3Contract, useMoralis, useMoralisQuery } from "react-moralis" //import { useMoralisQuery, useMoralis } from "react-moralis"
 import { abi, contractAddresses } from "../constants"
 import { BsFillFileEarmarkImageFill } from "react-icons/bs"
@@ -65,18 +65,11 @@ const UploaderImages = () => {
         let myTokensId = []
         tokensId.map((t) => {
             myTokensId.push(parseInt(t))
-            //console.log(parseInt(t))
         })
 
         setTokensId(myTokensId)
     }
-    /*
-    const getTokenURI = async () => {
-        let URI = await tokenURI()
-        console.log(tokenIdActual)
-        console.log(URI)
-    }
-    */
+
     useEffect(() => {
         if (isWeb3Enabled) {
             getAllMyTokensId()
@@ -84,18 +77,15 @@ const UploaderImages = () => {
     }, [isWeb3Enabled])
 
     const onChange = (imageList, addUpdateIndex) => {
-        console.log(imageList)
         imageList.map((i) => {
             if (i.metadata == undefined) {
                 i.metadata = templateURI
             }
         })
         setImagesObj(imageList)
-        console.log(imageList)
     }
 
     const onChangeMetaData = (index, field, idx, value) => {
-        //console.log(index, field, idx, value)
         let newImages = [...imagesObj]
         if (field) newImages[index].metadata[field] = value
         else newImages[index].metadata.attributes[idx].value = value
@@ -116,7 +106,6 @@ const UploaderImages = () => {
     const MinNFT = async () => {
         //Mintear NFT
         await safeMint({ onSuccess: handleSuccess })
-        //console.log(imagesURI)
     }
 
     const sendFileToIPFS = async (obj, urisimg) => {
@@ -420,80 +409,10 @@ const UploaderImages = () => {
             ) : (
                 <div className="flex flex-wrap justify-center ">
                     {tokensId.map((t) => {
-                        return <NftCard key={t} id={t} />
+                        return <NftCard key={t} id={t} getAllMyTokensId={getAllMyTokensId} />
                     })}
                 </div>
             )}
-        </div>
-    )
-}
-
-const NftCard = ({ id }) => {
-    const [tokenIdActual, setTokensIdActual] = useState(id)
-    const [tokenActual, setTokenActual] = useState({})
-    const { chainId: chainIdHex, isWeb3Enabled, account } = useMoralis()
-    const chainId = parseInt(chainIdHex)
-    const keeperFlower = chainId in contractAddresses ? contractAddresses[chainId][0] : null
-
-    //console.log(listedNfts)
-
-    //getURI of NFT
-    const { runContractFunction: tokenURI } = useWeb3Contract({
-        abi: abi,
-        contractAddress: keeperFlower,
-        functionName: "tokenURI",
-        params: { tokenId: tokenIdActual },
-    })
-
-    useEffect(() => {
-        getTokenURI()
-    }, [])
-
-    const getTokenURI = async () => {
-        let uriIpfs = await tokenURI()
-        let uriResponse = await (
-            await fetch(uriIpfs.replace("ipfs://", "https://ipfs.io/ipfs/"))
-        ).json()
-        uriResponse.image = uriResponse.image.replace("ipfs://", "https://ipfs.io/ipfs/")
-        //console.log(uriResponse)
-        setTokenActual(uriResponse)
-    }
-    return (
-        <div className="m-2 w-64" id={id}>
-            <Card
-                description={tokenActual.description}
-                onClick={function noRefCheck() {}}
-                setIsSelected={function noRefCheck() {}}
-                title={tokenActual.name}
-                tooltipText={
-                    <div>
-                        <div className="flex ">
-                            {tokenActual.attributes &&
-                                `${tokenActual.attributes[0]["trait-type"]}: ${tokenActual.attributes[0]["value"]}`}
-                        </div>
-                        <div className="flex pt-2">
-                            {tokenActual.attributes &&
-                                `${tokenActual.attributes[1]["trait-type"]}: ${tokenActual.attributes[1]["value"]}`}
-                        </div>
-                    </div>
-                }
-            >
-                <div>
-                    {tokenActual.image ? (
-                        <Image
-                            loader={() => tokenActual.image}
-                            src={tokenActual.image}
-                            height="200"
-                            width="200"
-                        />
-                    ) : (
-                        <Skeleton theme="image" height="200px" width="200px" />
-                    )}
-                </div>
-                <div className="flex justify-center">
-                    <Button color="blue" onClick={getTokenURI} text="Actualizar" theme="colored" />
-                </div>
-            </Card>
         </div>
     )
 }

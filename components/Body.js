@@ -5,7 +5,7 @@ import UploaderImages from "./UploaderImages"
 
 const Body = () => {
     return (
-        <div className="bg-slate-400 w-full pt-2">
+        <div className="bg-slate-400 h-full overflow-auto w-full pt-2">
             <div>
                 <UploaderImages />
             </div>

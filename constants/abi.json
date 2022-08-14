@@ -59,6 +59,14 @@
     },
     {
         "type": "function",
+        "name": "burnToken",
+        "constant": false,
+        "payable": false,
+        "inputs": [{ "type": "uint256", "name": "tokenId" }],
+        "outputs": []
+    },
+    {
+        "type": "function",
         "name": "checkUpkeep",
         "constant": true,
         "stateMutability": "view",
@@ -149,6 +157,14 @@
         "constant": false,
         "payable": false,
         "inputs": [{ "type": "bytes" }],
+        "outputs": []
+    },
+    {
+        "type": "function",
+        "name": "removeTokenIdFromOwner",
+        "constant": false,
+        "payable": false,
+        "inputs": [{ "type": "uint256", "name": "tokenId" }],
         "outputs": []
     },
     {
